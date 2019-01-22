@@ -348,6 +348,11 @@ https://swagger.io/tools/
 Servers: Connexion (Python)
 ============================
 
+::
+
+    app = connexion.FlaskApp(__name__)
+    app.add_api('openapi.yaml')
+    app.run(port=8081, use_reloader=False, threaded=False)
 -----
 
 Servers: Loopback (TypeScript)

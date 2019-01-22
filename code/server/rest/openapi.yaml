@@ -1,0 +1,108 @@
+openapi: 3.0.0
+servers:
+  - url: http://localhost:8081/
+info:
+  title: BikeHike API
+  version: '0.1'
+paths:
+  /bikes:
+    get:
+      tags:
+        - Bikes
+      operationId: app.get_bikes
+      summary: Get all bikes
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 100
+      responses:
+        '200':
+          description: Return bikes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Bike'
+  '/bikes/{bike_id}':
+    get:
+      tags:
+        - Bikes
+      operationId: app.get_bike
+      summary: Get a single bike
+      parameters:
+        - $ref: '#/components/parameters/bike_id'
+      responses:
+        '200':
+          description: Return bike
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bike'
+        '404':
+          description: Bike does not exist
+    put:
+      tags:
+        - Bikes
+      operationId: app.put_bike
+      summary: Create or update a bike
+      parameters:
+        - $ref: '#/components/parameters/bike_id'
+      responses:
+        '200':
+          description: Bike updated
+        '201':
+          description: New bike created
+      requestBody:
+        content:
+          application/json:
+            schema:
+              x-body-name: bike
+              $ref: '#/components/schemas/Bike'
+    delete:
+      tags:
+        - Bikes
+      operationId: app.delete_bike
+      summary: Remove a bike
+      parameters:
+        - $ref: '#/components/parameters/bike_id'
+      responses:
+        '204':
+          description: Bike was deleted
+        '404':
+          description: Bike does not exist
+components:
+  parameters:
+    bike_id:
+      name: bike_id
+      description: Bike UID
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: '^[a-zA-Z0-9-]+$'
+  schemas:
+    Bike:
+      type: object
+      required:
+        - name
+        - model
+      properties:
+        id:
+          type: string
+          description: Unique identifier
+          example: '123'
+          readOnly: true
+        name:
+          type: string
+          description: Bike Name
+          example: Raleigh
+        model:
+          type: string
+          description: Bike model
+          example: Fixie
+        age:
+          type: integer
