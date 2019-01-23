@@ -2,7 +2,27 @@
 :author Chris Gwilliams
 :description Work smart, work free (as in speech)
 
-STUFF
+.. role:: bash(code)
+   :language: bash
+.. role:: py(code)
+   :language: python
+.. role:: vue(code)
+   :language: html
+
+The Open Source Startup
+=======================
+Chris Gwilliams
+---------------
+gh: @encima tw: @encima27
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. image:: img/dog.jpg
+   :height: 300
+   :width: 200
+   :scale: 50
+   :align: right
+
+https://github.com/encima/open_source_startup
 
 -----
 
@@ -43,7 +63,7 @@ I have worked with companies in industry, freelanced and worked in universities 
 
 -----
 
-:data-y: r-800
+:data-y: r-400
 
 Who?
 ====
@@ -133,7 +153,7 @@ Technical
 If You Are Not Technical
 =========================
 
-* Trust your developers**
+* Trust your developers **
 * Project management is vital and you can do it
 * If you create a hierarchy, you create a problem
 * One tool to do all is often worse than separate products
@@ -201,6 +221,39 @@ Closed Source
 
 -----
 
+Databases (Or...Why Postgres?)
+===============================
+
+Really, Postgres does not matter, you have a bunch of options.
+
+Only creating a mobile site? **SQLite**
+Relational data? **MySQL/Postgres/Maria**
+Crap ton of Data/Fast pipeline? **Cassandra**
+Not sure? **Not Mongo**
+
+-----
+
+Run it!
+==========
+
+.. code:: shell
+
+  version: '3.1'
+
+services:
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: chiaseeds
+      POSTGRES_USER: organic_almond_milk
+      POSTGRES_DB: bikehike
+    ports:
+      - 7000:5432
+
+-----
+
 Backend
 ========
 
@@ -236,7 +289,7 @@ REST
 
 * GET (/model?search):
 
-::
+.. code:: python
 
    def get_model(search_terms):
       yay = get_models_from_db(search_terms)
@@ -249,7 +302,7 @@ REST
 
 * POST (/model):
 
-::
+.. code:: python
 
    def create_model(model):
       yay = create_model(model)
@@ -262,7 +315,7 @@ REST
 
 * PUT (/model/id):
 
-::
+.. code:: python
 
    def update_model(id, model):
       yay = update_model(model)
@@ -275,7 +328,7 @@ REST
 
 * DELETE (/model/id)
 
-::
+.. code:: python
 
    def delete_model(id):
       yay = delete_model(id)
@@ -304,7 +357,7 @@ OpenAPI
 
 There really is only one option:
 
-::
+.. code:: yaml
 
    openapi: "3.0.0" (latest version, v2 is called Swagger)
    info:
@@ -348,15 +401,11 @@ https://swagger.io/tools/
 Servers: Connexion (Python)
 ============================
 
-::
+.. code:: python
 
     app = connexion.FlaskApp(__name__)
     app.add_api('openapi.yaml')
     app.run(port=8081, use_reloader=False, threaded=False)
------
-
-Servers: Loopback (TypeScript)
-==============================
 
 -----
 
@@ -386,7 +435,7 @@ Cons:
 Hasura
 =======
 
-::
+.. code:: bash
 
    wget https://raw.githubusercontent.com/hasura/graphql-engine/master/install-manifests/docker-compose/docker-compose.yaml
    docker-compose up -d #DONE! WHAT?!?
@@ -398,12 +447,35 @@ GraphQL - Queries
 
 * Get some data
 
+.. code::
+
+   query Horses($name: String!, $id: uuid!) {
+      horses(where: {name: {_eq: $name}, id: {_eq: $id}}) {
+        id,
+        name,
+        description
+      }
+    }
+
 -----
 
 GraphQL - Mutations
 ====================
 
 * Mess with some data
+
+.. code::
+
+	mutation register_user($objects: [users_insert_input!]!) {
+			insert_users(objects: $objects) {
+				returning {
+					id
+					api_key
+					username
+					email
+				}
+			}
+		}
 
 -----
 
@@ -438,16 +510,130 @@ VueJS
 Go Go GO
 =========
 
-::
+.. code:: bash
 
    npm i -g @vue/cli
-   vue-cli gui
+   vue create bikehike
+   cd bikehike; npm run serve
 
 -----
 
-Styling
+Quick Overview
+==============
+
+Vue has a:
+
+* main.ts/js file: This is where the app is loaded and all plugins are made
+* router.ts/js file: This holds all the routes and the views they link to. You can also handle authorisation and such here.
+* Components: a folder for all of your widgets
+* Views: a folder for all of your pages
 
 -----
+
+Not a designer? Not a problem
+==============================
+
+.. code:: shell
+
+  npm i vue-material
+        vuetify
+        vuikit
+
+
+https://madewithvuejs.com/frameworks
+
+-----
+
+
+Components and Views
+=====================
+
+**Components** are like the login form on a site or the results table. Using as many components as possible means you can reuse them throughout your application.
+
+**Views** are the pages themselves, such as an Account page or an Item listing page.
+
+-----
+
+First Component
+================
+
+When Vue makes your app for you, it creates a **components** and **views** folder. Inside components, we see a HelloWorld.vue.
+
+Open it up and we can modify it to be something useful.
+
+
+-----
+
+.. code:: html
+
+  <template>
+    <div class="hello">
+      <h1>{{ msg }}</h1>
+      <md-list class="md-triple-line" v-for="item in bikes">
+        <md-list-item>
+          <md-avatar>
+            <img :src="item.path" alt="BICYCLE">
+          </md-avatar>
+
+          <div class="md-list-item-text">
+            <span>{{item.name}}</span>
+            <span>{{item.model}}</span>
+            <p>{{item.description}}</p>
+          </div>
+
+          <md-button class="md-icon-button md-list-action">
+            <md-icon class="md-primary">star</md-icon>
+          </md-button>
+        </md-list-item>
+
+        <md-divider class="md-inset"></md-divider>
+      </md-list>
+
+    </div>
+  </template>
+
+  <script lang="ts">
+  import { Component, Prop, Vue } from 'vue-property-decorator';
+
+  @Component
+  export default class BikeList extends Vue {
+    @Prop() private msg!: string;
+    bikes: [
+            {
+              name: 'raleigh',
+              path: 'https://media0.giphy.com/media/bhSi84uFsp66s/giphy.gif?cid=3640f6095c46d156615a4757739c5823',
+              model: 'trickster',
+              description: 'Sure, it is not a penny farthing, but it has some sick stabilisers'
+            }
+          ]
+  }
+  </script>
+
+  <!-- Add "scoped" attribute to limit CSS to this component only -->
+  <style scoped lang="scss">
+  h3 {
+    margin: 40px 0 0;
+  }
+  </style>
+
+-----
+
+Link to your backend
+=====================
+
+.. code:: javascript
+
+   Swagger({
+            url: options.swaggerURL
+        }).then(client => {
+          console.log('client reached');
+        }).catch(err => {
+          console.error('Endpoint likely not available');
+        });
+
+-----
+
+:data-y: r0
 
 Mobile
 =======
@@ -496,5 +682,76 @@ Let's go mobile!
 
 Add some  lists and data and such
 ==================================
+
+.. code:: dart
+
+  class BikeInfoCard extends StatefulWidget {
+      final Bike bike;
+
+      BikeInfoCard({Key key, this.bike}) : super(key: key);
+
+      @override
+      BikeInfoState createState() => BikeInfoState();
+      }
+
+   class BikeInfoState extends State<BikeInfoCard> {
+      @override
+      void initState() {
+         super.initState();
+      }
+
+      Widget build(context) {
+         // We use the widget variable to access the parent widget that owns the state
+         return Text(widget.bike.name);
+      }
+   }
+
+-----
+
+.. code:: dart
+
+   class BikeList extends StatelessWidget {
+      final List<Bike> bikes;
+
+      BikeList(this.bikes);
+
+      @override
+      Widget build(BuildContext build) {
+         return ListView.builder(
+            // Must have an item count equal to the number of items!
+            itemCount: bikes.length,
+            // A callback that will return a widget.
+            itemBuilder: (context, index) {
+            // In our case, a DogCard for each doggo.
+            return BikeInfoCard(bike: bikes[index]);
+            },
+         );
+      }
+   }
+
+-----
+
+More?
+=====
+
+i.e.
+
+* Where is the beer?
+* Why did this not help?
+* Does it work in Internet Explorer?
+* This is not the Spanish Learning Meetup, is it?
+* Do you have any self respect at all?
+* What do we do now?
+
+.. image:: img/same.gif
+
+https://github.com/encima/open_source_startup
+
+.. note::
+
+  * https://getmakerlog.com/
+  * https://wip.chat/
+  * meetup.com
+  * gitter.im
 
 
