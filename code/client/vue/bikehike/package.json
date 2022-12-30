@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "register-service-worker": "^1.5.2",
-    "swagger-client": "^3.8.22",
+    "swagger-client": "^3.18.5",
     "vue": "^2.5.21",
     "vue-material": "^1.0.0-beta-10.2",
     "vue-router": "^3.0.1",
